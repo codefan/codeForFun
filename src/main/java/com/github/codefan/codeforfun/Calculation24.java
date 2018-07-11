@@ -7,13 +7,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Calculation24 {
-    private static int foundReslutions;
+
+    private static Map<String, List<String>> foundReslutions = new HashMap<>(50);
     /**
      * 非递归的排列组合
      * @param listSouce 可 排序的 列表
@@ -110,7 +109,7 @@ public class Calculation24 {
     }
 
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
-    private static void checkResultAndShow(Object[] reversePolish){
+    private static void checkResult(Object[] reversePolish){
         if( Math.abs(calcReversePolishRepresentation(reversePolish) - 24) < 0.0001f  ){
             Pair<String, String>[] stack = new Pair[4];
             int j = 0;
@@ -164,17 +163,15 @@ public class Calculation24 {
                     j--;
                 }
             }
-            foundReslutions ++;
-            System.out.print(foundReslutions + "\t: "+ stack[0].getRight());
-            System.out.print("\t");
-            if(stack[0].getRight().length()<10){
-                System.out.print("\t");
+            String rb = StringUtils.join(reversePolish, " ");
+            List<String> rbs = foundReslutions.get(stack[0].getRight());
+            if(rbs==null){
+                rbs = new ArrayList<>();
+                rbs.add(rb);
+                foundReslutions.put(stack[0].getRight(), rbs);
+            }else{
+                rbs.add(rb);
             }
-            for(int i=0;i<7;i++){
-                System.out.print(reversePolish[i]);
-                System.out.print(" ");
-            }
-            System.out.println();
         }
     }
 
@@ -194,27 +191,27 @@ public class Calculation24 {
                     stack[4] = opts[j];
                     stack[5] = rList.get(3);
                     stack[6] = opts[k];
-                    checkResultAndShow(stack);
+                    checkResult(stack);
                     // a b + c d + +
                     stack[3] = rList.get(2);
                     stack[4] = rList.get(3);
                     stack[5] = opts[j];
-                    checkResultAndShow(stack);
+                    checkResult(stack);
                     // a b c + d + +
                     stack[2] = rList.get(2);
                     stack[3] = opts[i];
                     stack[4] = rList.get(3);
-                    checkResultAndShow(stack);
+                    checkResult(stack);
                     // a b c + + d +
                     stack[3] = opts[i];
                     stack[4] = opts[j];
                     stack[5] = rList.get(3);
-                    checkResultAndShow(stack);
+                    checkResult(stack);
                     // a b c d + + +
                     stack[3] = rList.get(3);
                     stack[4] = opts[i];
                     stack[5] = opts[j];
-                    checkResultAndShow(stack);
+                    checkResult(stack);
                 }
             }
         }
@@ -237,7 +234,7 @@ public class Calculation24 {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.println("输入用空格隔开的4在1和10之间的整数，退出请输入exit：");
+            System.out.println("请在一行中输入用空格隔开的4在1和10之间的整数，退出请输入exit：");
             String s = br.readLine().trim();
             if(StringUtils.isBlank(s)){
                 continue;
@@ -245,7 +242,7 @@ public class Calculation24 {
             if(StringUtils.equalsIgnoreCase("exit",s)){
                 break;
             }
-            foundReslutions = 0;
+            foundReslutions.clear();
             String[] nums = s.split(" ");
             List<Integer> alist = new ArrayList<>(4);
             for (String num : nums) {
@@ -263,7 +260,21 @@ public class Calculation24 {
             Calculation24.combination(
                     alist, Integer::compare, Calculation24::calc24Point
             );
-            System.out.println("一共中找到 " + foundReslutions + " 个不同方案, 部分方案重复但其对应的逆波兰式是不一样的。");
+            //展示结果
+            int sc=0;
+            for(Map.Entry<String,List<String>> ent : foundReslutions.entrySet()){
+                sc ++;
+                System.out.print((sc<10?" "+sc+ ": ": sc + ": ")+ ent.getKey());
+                for(int i= ent.getKey().length(); i<16; i++ ){
+                    System.out.print(" ");
+                }
+                System.out.println(ent.getValue().get(0));
+                for(int i=1; i<ent.getValue().size();i++){
+                    System.out.print("                    ");
+                    System.out.println(ent.getValue().get(i));
+                }
+            }
+            System.out.println("一共中找到 " + sc + " 个不同方案。");
         }
     }
 }
