@@ -3,7 +3,6 @@ package com.github.codefan.codeforfun;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Calculation24 {
-
     public static int foundReslutions;
     /**
      * 非递归的排列组合
@@ -26,13 +24,11 @@ public class Calculation24 {
     public static <T> void  combination(List<T> listSouce ,
                                         Comparator<? super T> comparable,
                                         Consumer<List<T>> consumer){
-
         Collections.sort(listSouce, comparable);
         int len = listSouce.size();
         List<Integer> comPos = new ArrayList<>(len);
         List<List<T>> subList = new ArrayList<>(len);
         List<T> comRes = new ArrayList<>(len);
-
         for(int i=0;i<len;i++){
             comPos.add(-1);
             subList.add(new ArrayList<>(len));
@@ -40,9 +36,7 @@ public class Calculation24 {
         }
         comPos.set(0,0);
         subList.set(0,listSouce);
-
         int sortIndex = 0;
-
         while(sortIndex >=0 ){
             comRes.set(sortIndex, subList.get(sortIndex).get( comPos.get(sortIndex)));
             if( sortIndex == len - 2){ // 如果获得一个排序
@@ -119,7 +113,7 @@ public class Calculation24 {
     }
 
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
-    public static void calc24(Object [] reversePolish){
+    public static void checkResultAndShow(Object [] reversePolish){
         if( Math.abs(calcReversePolishRepresentation(reversePolish) - 24) < 0.0001f  ){
             Pair<String, String>[] stack = new Pair[4];
             int j = 0;
@@ -188,7 +182,8 @@ public class Calculation24 {
     }
 
     //将 数字和操作排序
-    public static void sortFormulaOpt( List<Integer> rList ){
+    //这部分代码写的比较笨拙，应该可以更优美一点
+    public static void calc24Point( List<Integer> rList ){
         String[] opts = {"+","-","*","/"};
         Object [] stack = new Object[7];
         for(int i=0;i<4;i++){
@@ -197,40 +192,38 @@ public class Calculation24 {
                     // a b + c + d +
                     stack[0] = rList.get(0);
                     stack[1] = rList.get(1);
-
                     stack[2] = opts[i];
                     stack[3] = rList.get(2);
                     stack[4] = opts[j];
                     stack[5] = rList.get(3);
-
                     stack[6] = opts[k];
-                    calc24(stack);
+                    checkResultAndShow(stack);
                     // a b + c d + +
                     stack[3] = rList.get(2);
                     stack[4] = rList.get(3);
                     stack[5] = opts[j];
-                    calc24(stack);
+                    checkResultAndShow(stack);
                     // a b c + d + +
                     stack[2] = rList.get(2);
                     stack[3] = opts[i];
                     stack[4] = rList.get(3);
-                    calc24(stack);
+                    checkResultAndShow(stack);
                     // a b c + + d +
                     stack[3] = opts[i];
                     stack[4] = opts[j];
                     stack[5] = rList.get(3);
-                    calc24(stack);
+                    checkResultAndShow(stack);
                     // a b c d + + +
                     stack[3] = rList.get(3);
                     stack[4] = opts[i];
                     stack[5] = opts[j];
-                    calc24(stack);
+                    checkResultAndShow(stack);
                 }
             }
         }
-
     }
 
+    //判断输入的是否为数值
     public static boolean isNumber(String strNum) {
         if(StringUtils.isBlank(strNum)){
             return false;
@@ -260,19 +253,18 @@ public class Calculation24 {
             List<Integer> alist = new ArrayList<>(4);
             for(int i=0; i<nums.length; i++){
                 if(Calculation24.isNumber(nums[i])){
+                    //这边没有判断范围
                     alist.add(Integer.valueOf(nums[i]));
                     if( alist.size() == 4){
                         break;
                     }
                 }
             }
-
             if( alist.size() < 4){
                 continue;
             }
-
             Calculation24.combination(
-                    alist, Integer::compare, Calculation24::sortFormulaOpt
+                    alist, Integer::compare, Calculation24::calc24Point
             );
             System.out.println("一共中找到 " + foundReslutions + " 个不同方案, 部分方案重复但其对应的逆波兰式是不一样的。");
         }
