@@ -3,17 +3,17 @@ package com.github.codefan.codeforfun;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class Calculation24 {
-    public static int foundReslutions;
+    private static int foundReslutions;
     /**
      * 非递归的排列组合
      * @param listSouce 可 排序的 列表
@@ -21,10 +21,10 @@ public class Calculation24 {
      * @param consumer 消费排序结果
      * @param <T> 泛型
      */
-    public static <T> void  combination(List<T> listSouce ,
-                                        Comparator<? super T> comparable,
-                                        Consumer<List<T>> consumer){
-        Collections.sort(listSouce, comparable);
+    private static <T> void  combination(List<T> listSouce,
+                                         Comparator<? super T> comparable,
+                                         Consumer<List<T>> consumer){
+        listSouce.sort(comparable);
         int len = listSouce.size();
         List<Integer> comPos = new ArrayList<>(len);
         List<List<T>> subList = new ArrayList<>(len);
@@ -46,7 +46,6 @@ public class Calculation24 {
                 consumer.accept(comRes);
                 //回退
                 while(sortIndex >=0 ) {
-
                     //当前pos ++
                     while (comPos.get(sortIndex) + 1 < len - sortIndex && comparable.compare(
                             subList.get(sortIndex).get(comPos.get(sortIndex)),
@@ -54,7 +53,6 @@ public class Calculation24 {
                     ) == 0) {
                         comPos.set(sortIndex, comPos.get(sortIndex) + 1);
                     }
-
                     comPos.set(sortIndex, comPos.get(sortIndex) + 1);
                     // 如果已经到上线，继续回退
                     if (comPos.get(sortIndex)  < len - sortIndex) {
@@ -76,12 +74,11 @@ public class Calculation24 {
                 comPos.set(sortIndex + 1,0);
                 sortIndex++;
             }
-
         }
-
     }
+
     //逆波兰式
-    static float calcReversePolishRepresentation (Object [] reversePolish ) {
+    private static float calcReversePolishRepresentation(Object[] reversePolish) {
         float[] stack = new float[4];
         int j = 0;
         for (int i = 0; i < 7; i++) {
@@ -113,13 +110,13 @@ public class Calculation24 {
     }
 
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
-    public static void checkResultAndShow(Object [] reversePolish){
+    private static void checkResultAndShow(Object[] reversePolish){
         if( Math.abs(calcReversePolishRepresentation(reversePolish) - 24) < 0.0001f  ){
             Pair<String, String>[] stack = new Pair[4];
             int j = 0;
             for (int i = 0; i < 7; i++) {
                 if (reversePolish[i] instanceof Integer) {
-                    stack[j] = new ImmutablePair<>("O",String.valueOf((Integer)reversePolish[i]));
+                    stack[j] = new ImmutablePair<>("O",String.valueOf(reversePolish[i]));
                     j++;
                 } else {
                     switch ((String) reversePolish[i]) {
@@ -183,7 +180,7 @@ public class Calculation24 {
 
     //将 数字和操作排序
     //这部分代码写的比较笨拙，应该可以更优美一点
-    public static void calc24Point( List<Integer> rList ){
+    private static void calc24Point(List<Integer> rList){
         String[] opts = {"+","-","*","/"};
         Object [] stack = new Object[7];
         for(int i=0;i<4;i++){
@@ -224,7 +221,7 @@ public class Calculation24 {
     }
 
     //判断输入的是否为数值
-    public static boolean isNumber(String strNum) {
+    private static boolean isNumber(String strNum) {
         if(StringUtils.isBlank(strNum)){
             return false;
         }
@@ -251,11 +248,11 @@ public class Calculation24 {
             foundReslutions = 0;
             String[] nums = s.split(" ");
             List<Integer> alist = new ArrayList<>(4);
-            for(int i=0; i<nums.length; i++){
-                if(Calculation24.isNumber(nums[i])){
+            for (String num : nums) {
+                if (Calculation24.isNumber(num)) {
                     //这边没有判断范围
-                    alist.add(Integer.valueOf(nums[i]));
-                    if( alist.size() == 4){
+                    alist.add(Integer.valueOf(num));
+                    if (alist.size() == 4) {
                         break;
                     }
                 }
