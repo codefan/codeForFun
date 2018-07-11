@@ -109,6 +109,7 @@ public class Calculation24 {
     }
 
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
+    @SuppressWarnings("unchecked")
     private static void checkResult(Object[] reversePolish){
         if( Math.abs(calcReversePolishRepresentation(reversePolish) - 24) < 0.0001f  ){
             Pair<String, String>[] stack = new Pair[4];
