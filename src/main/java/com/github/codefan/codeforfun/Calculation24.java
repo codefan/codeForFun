@@ -20,57 +20,67 @@ public class Calculation24 {
      * @param consumer 消费排序结果
      * @param <T> 泛型
      */
-    private static <T> void  combination(List<T> listSouce,
-                                         Comparator<? super T> comparable,
-                                         Consumer<List<T>> consumer){
+    public static <T> void  combination(List<T> listSouce ,
+                                        Comparator<? super T> comparable,
+                                        Consumer<List<T>> consumer){
+        if(listSouce.size()<2){
+            consumer.accept(listSouce);
+            return;
+        }
         listSouce.sort(comparable);
         int len = listSouce.size();
         List<Integer> comPos = new ArrayList<>(len);
-        List<List<T>> subList = new ArrayList<>(len);
+        List<Boolean> usedItem = new ArrayList<>(len);
         List<T> comRes = new ArrayList<>(len);
         for(int i=0;i<len;i++){
             comPos.add(-1);
-            subList.add(new ArrayList<>(len));
+            usedItem.add(false);
             comRes.add(null);
         }
         comPos.set(0,0);
-        subList.set(0,listSouce);
         int sortIndex = 0;
         while(sortIndex >=0 ){
-            comRes.set(sortIndex, subList.get(sortIndex).get( comPos.get(sortIndex)));
+            comRes.set(sortIndex, listSouce.get( comPos.get(sortIndex)));
+            usedItem.set(comPos.get(sortIndex), true);
             if( sortIndex == len - 2){ // 如果获得一个排序
-                comRes.set( sortIndex +1,
-                        subList.get(sortIndex).get(
-                                (comPos.get(sortIndex) +1) % (len - sortIndex ) ) );
+                for(int i=0; i< len; i++){
+                    if(!usedItem.get(i)){// 将最后一个未使用的添加到排列的最后
+                        comRes.set( sortIndex +1, listSouce.get(i));
+                        break;
+                    }
+                }
                 consumer.accept(comRes);
-                //回退
                 while(sortIndex >=0 ) {
-                    //当前pos ++
-                    while (comPos.get(sortIndex) + 1 < len - sortIndex && comparable.compare(
-                            subList.get(sortIndex).get(comPos.get(sortIndex)),
-                            subList.get(sortIndex).get(comPos.get(sortIndex) + 1)
-                    ) == 0) {
+                    //下一个
+                    int prePos = comPos.get(sortIndex);
+                    usedItem.set(prePos, false);
+                    //当前pos ++ （步进）
+                    while (comPos.get(sortIndex) + 1  < len &&
+                            ( usedItem.get(comPos.get(sortIndex) + 1) ||
+                                    comparable.compare( listSouce.get(prePos),
+                                            listSouce.get(comPos.get(sortIndex) + 1))== 0 )) {
                         comPos.set(sortIndex, comPos.get(sortIndex) + 1);
                     }
                     comPos.set(sortIndex, comPos.get(sortIndex) + 1);
                     // 如果已经到上线，继续回退
-                    if (comPos.get(sortIndex)  < len - sortIndex) {
+                    if (comPos.get(sortIndex)  < len ) {
                         //重新计算下个列表
-                        subList.get(sortIndex + 1).clear();
-                        subList.get(sortIndex + 1).addAll(subList.get(sortIndex));
-                        subList.get(sortIndex + 1).remove( comPos.get(sortIndex).intValue());
-                        comPos.set(sortIndex + 1,0);
+                        usedItem.set(comPos.get(sortIndex), true);
+                        comRes.set( sortIndex, listSouce.get(comPos.get(sortIndex)));
                         break;
-                    }else{
+                    }else{ // 回退
                         sortIndex--;
                         //comPos.set(sortIndex, comPos.get(sortIndex) + 1);
                     }
                 }
-            }else {
-                subList.get(sortIndex + 1).clear();
-                subList.get(sortIndex + 1).addAll(subList.get(sortIndex));
-                subList.get(sortIndex + 1).remove( comPos.get(sortIndex).intValue());
-                comPos.set(sortIndex + 1,0);
+            } else { // 下一个
+                for(int i=0; i< len; i++){
+                    if(!usedItem.get(i)){
+                        comPos.set(sortIndex + 1,i);
+                        usedItem.set(i,true);
+                        break;
+                    }
+                }
                 sortIndex++;
             }
         }
@@ -184,7 +194,7 @@ public class Calculation24 {
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
                 for(int k=0;k<4;k++){
-                    // a b + c + d +
+                    // a b + c + d +  (((a+b)+c)+d)
                     stack[0] = rList.get(0);
                     stack[1] = rList.get(1);
                     stack[2] = opts[i];
@@ -193,22 +203,22 @@ public class Calculation24 {
                     stack[5] = rList.get(3);
                     stack[6] = opts[k];
                     checkResult(stack);
-                    // a b + c d + +
+                    // a b + c d + +  ((a+b)+(c+d))
                     stack[3] = rList.get(2);
                     stack[4] = rList.get(3);
                     stack[5] = opts[j];
                     checkResult(stack);
-                    // a b c + d + +
+                    // a b c + d + +  (a+((b+c)+d))
                     stack[2] = rList.get(2);
                     stack[3] = opts[i];
                     stack[4] = rList.get(3);
                     checkResult(stack);
-                    // a b c + + d +
+                    // a b c + + d +  ((a+(b+c))+d)
                     stack[3] = opts[i];
                     stack[4] = opts[j];
                     stack[5] = rList.get(3);
                     checkResult(stack);
-                    // a b c d + + +
+                    // a b c d + + +  (a+(b+(c+d)))
                     stack[3] = rList.get(3);
                     stack[4] = opts[i];
                     stack[5] = opts[j];
