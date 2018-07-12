@@ -38,10 +38,10 @@ public class Calculation24 {
             comRes.add(null);
         }
         comPos.set(0,0);
+        usedItem.set(0, true);
         int sortIndex = 0;
         while(sortIndex >=0 ){
             comRes.set(sortIndex, listSouce.get( comPos.get(sortIndex)));
-            usedItem.set(comPos.get(sortIndex), true);
             if( sortIndex == len - 2){ // 如果获得一个排序
                 for(int i=0; i< len; i++){
                     if(!usedItem.get(i)){// 将最后一个未使用的添加到排列的最后
