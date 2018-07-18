@@ -3,6 +3,7 @@ package com.github.codefan.codeforfun;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.fraction.Fraction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,29 +88,29 @@ public class Calculation24 {
     }
 
     //逆波兰式
-    private static float calcReversePolishRepresentation(Object[] reversePolish) {
-        float[] stack = new float[4];
+    private static Fraction calcReversePolishRepresentation(Object[] reversePolish) {
+        Fraction[] stack = new Fraction[4];
         int j = 0;
         for (int i = 0; i < 7; i++) {
             if (reversePolish[i] instanceof Integer) {
-                stack[j] =  ((Integer) reversePolish[i]).floatValue();
+                stack[j] =  new Fraction((Integer) reversePolish[i]);
                 j++;
             } else {
                 switch ((String) reversePolish[i]) {
                     case "+":
-                        stack[j - 2] = stack[j - 2] + stack[j - 1];
+                        stack[j - 2] = stack[j - 2].add(stack[j - 1]);
                         break;
                     case "-":
-                        stack[j - 2] = stack[j - 2] - stack[j - 1];
+                        stack[j - 2] = stack[j - 2].subtract(stack[j - 1]);
                         break;
                     case "*":
-                        stack[j - 2] = stack[j - 2] * stack[j - 1];
+                        stack[j - 2] = stack[j - 2].multiply(stack[j - 1]);
                         break;
                     case "/":
-                        if (stack[j - 1] == 0) {
-                            return -1;
+                        if (stack[j - 1].equals(Fraction.ZERO)) {
+                            return Fraction.MINUS_ONE;
                         }
-                        stack[j - 2] = stack[j - 2] / stack[j - 1];
+                        stack[j - 2] = stack[j - 2].divide(stack[j - 1]);
                         break;
                 }
                 j--;
@@ -121,7 +122,7 @@ public class Calculation24 {
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
     @SuppressWarnings("unchecked")
     private static void checkResult(Object[] reversePolish){
-        if( Math.abs(calcReversePolishRepresentation(reversePolish) - 24) < 0.0001f  ){
+        if( calcReversePolishRepresentation(reversePolish).equals(new Fraction(24))  ){
             Pair<String, String>[] stack = new Pair[4];
             int j = 0;
             for (int i = 0; i < 7; i++) {
