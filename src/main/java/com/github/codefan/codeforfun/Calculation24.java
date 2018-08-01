@@ -21,9 +21,9 @@ public class Calculation24 {
      * @param consumer 消费排序结果
      * @param <T> 泛型
      */
-    public static <T> void  combination(List<T> listSouce ,
-                                        Comparator<? super T> comparable,
-                                        Consumer<List<T>> consumer){
+    public static <T> void permutation(List<T> listSouce ,
+                                       Comparator<? super T> comparable,
+                                       Consumer<List<T>> consumer){
         if(listSouce.size()<2){
             consumer.accept(listSouce);
             return;
@@ -269,7 +269,7 @@ public class Calculation24 {
             if( alist.size() < 4){
                 continue;
             }
-            Calculation24.combination(
+            Calculation24.permutation(
                     alist, Integer::compare, Calculation24::calc24Point
             );
             //展示结果
