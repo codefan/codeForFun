@@ -187,6 +187,39 @@ public class Calculation24 {
         }
     }
 
+    public static void makeOperatorArray(int nOps , Consumer<String[]> consumer ){
+        String[] opts = {"+","-","*","/","A"};
+        String[] opArr = new String[nOps];
+        int [] nPos = new int[nOps];
+        for(int i=0; i<nOps; i++){
+            opArr[i] = opts[0];
+            nPos[i] = 0;
+        }
+        int j = 0;
+        while(true){
+            consumer.accept(opArr);
+            //System.out.println( StringUtils.join(opArr,","));
+            nPos[j] = nPos[j] + 1;
+
+            while(j<nOps && nPos[j]==4){
+                nPos[j] = 0;
+                opArr[j] = opts[0];
+                j++;
+                if(j>=nOps){
+                    break;
+                }
+                nPos[j] = nPos[j] + 1;
+            }
+
+            if(j>=nOps){
+                break;
+            }else{
+                opArr[j] = opts[nPos[j]];
+                j = 0;
+            }
+        }
+    }
+
     //将 数字和操作排序
     //这部分代码写的比较笨拙，应该可以更优美一点
     private static void calc24Point(List<Integer> rList){
@@ -243,7 +276,12 @@ public class Calculation24 {
     }
 
     public static void main(String arg[]) throws IOException {
+        makeOperatorArray(4,(opArr)->
+                System.out.println( StringUtils.join(opArr,",")));
 
+        return;
+    }
+    /*
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             System.out.println("请在一行中输入用空格隔开的4在1和10之间的整数，退出请输入exit：");
@@ -288,6 +326,6 @@ public class Calculation24 {
             }
             System.out.println("一共中找到 " + sc + " 个不同方案。");
         }
-    }
+    }*/
 }
 
