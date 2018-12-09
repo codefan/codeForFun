@@ -120,10 +120,10 @@ public class SearchFormula {
                     dPos ++;
                     oPos ++;
                 }
-                if(i<oN-1) {
+                if(i < oN-1) {
                     reversePolish[dPos] = data.get(2 + i);
+                    dPos++;
                 }
-                dPos++;
             }
 
             //Fraction f = calcReversePolishRepresentation(reversePolish);

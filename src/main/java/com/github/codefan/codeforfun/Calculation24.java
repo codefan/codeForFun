@@ -115,7 +115,7 @@ public class Calculation24 {
             Calculation24.permutation(
                     alist, Integer::compare,
                     (data) -> SearchFormula.searchFormulaAndCalc(
-                            alist, (reversePolish) ->
+                            data, (reversePolish) ->
                                     SearchFormula.filterFormula(24, reversePolish,
                                             SearchFormula::transPolish )));
 
