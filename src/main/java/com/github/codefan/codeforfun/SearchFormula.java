@@ -85,12 +85,20 @@ public class SearchFormula {
         }
     }
 
+    public static void filterFormula(final int filterValue, final Object[] reversePolish ,  Consumer<Object[]> consumer ){
+        Fraction f = calcReversePolishRepresentation(reversePolish);
+        if(f.equals(new Fraction(filterValue))) {
+            consumer.accept(reversePolish);
+        }
+        //System.out.println( StringUtils.join(reversePolish,','));
+    }
+
     // 根据给出的 数据 和 运算符号，来穷举 不同的 组合方式
     // 对于 逆波兰式 来说 就是变换 运算符号的位置
     // 并计算结果
     // 对结果等于 filterValue 的表达式 执行 consumer 消费方法
     public static void makeFormulaAndCalc(List<Integer> data, String[] opts,
-                                          int filterValue , Consumer<Object[]> consumer ){
+                                           Consumer<Object[]> consumer ){
         int dN = data.size();
         int oN = opts.length;
         assert dN == oN +1;
@@ -118,11 +126,11 @@ public class SearchFormula {
                 dPos++;
             }
 
-            Fraction f = calcReversePolishRepresentation(reversePolish);
-            if(f.equals(new Fraction(filterValue))){
-                consumer.accept(reversePolish);
+            //Fraction f = calcReversePolishRepresentation(reversePolish);
+            //if(f.equals(new Fraction(filterValue))){
+            consumer.accept(reversePolish);
                 //System.out.println( StringUtils.join(reversePolish,','));
-            }
+            //}
             int i=0;
             while(i<oN-1){
                 if(optPos[i] == 0 ){
@@ -147,9 +155,9 @@ public class SearchFormula {
     }
 
     // 对给定的 数据 通过组合运算符号的方式 来 筛选符合 filterValue 结果的方式
-    public static void searchFormulaAndCalc(List<Integer> data, int filterValue, Consumer<Object[]> consumer){
+    public static void searchFormulaAndCalc(List<Integer> data, Consumer<Object[]> consumer){
         int nD = data.size();
-        makeOperatorArray(nD-1, (opts) -> makeFormulaAndCalc(data, opts, filterValue , consumer));
+        makeOperatorArray(nD-1, (opts) -> makeFormulaAndCalc(data, opts,  consumer));
     }
 
     // 算24点 并将结果的逆波兰式转换为 四则运算表达式
@@ -279,9 +287,9 @@ public class SearchFormula {
             if( alist.size() < 2){
                 continue;
             }
-            final Integer nFilter = nRet;
+            final int filterValue = nRet;
             searchFormulaAndCalc(alist,
-                            nFilter, SearchFormula::transPolish);
+                    (reversePolish) ->SearchFormula.filterFormula( filterValue, reversePolish, SearchFormula::transPolish ));
                             //(reversePolish)-> System.out.println( StringUtils.join(reversePolish,','))));
             showResult();
         }
