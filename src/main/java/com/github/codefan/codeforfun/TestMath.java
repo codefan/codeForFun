@@ -1,5 +1,7 @@
 package com.github.codefan.codeforfun;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,12 @@ public class TestMath {
     }
 
     public static void main(String arg[]) {
+        SearchFormula.makeOperatorArray2(4,
+                (data) -> System.out.println(StringUtils.join(data,",")));
+    }
+
+    public static void main3(String arg[]) {
+
         List<Integer> data = new ArrayList<>(10);
 
         for(int n = 2; n<10; n++) {

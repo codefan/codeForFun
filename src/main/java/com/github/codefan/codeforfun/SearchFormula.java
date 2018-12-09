@@ -50,6 +50,22 @@ public class SearchFormula {
         return stack[0];
     }
 
+    // 可以用四进制 方式来解决
+    public static void makeOperatorArray2(int nOps , Consumer<String[]> consumer ){
+        String[] opts = {"+","-","*","/","A"};
+        long n = 1L << (nOps * 2);
+        String[] opArr = new String[nOps];
+        for(long l=0L; l<n; l++){
+            long t = l;
+            for(int i=0; i<nOps; i++){
+                long tp = 3L & t;
+                t >>= 2;
+                opArr[i] = opts[Long.valueOf(tp).intValue()];
+            }
+            consumer.accept(opArr);
+        }
+    }
+
     // 根据 二元运算符号的数量（nOps） 穷举所有的情况，数量为 nOps的4次方
     // 这个比较大 没有采用返回 数组的方式，用消费者模式
     public static void makeOperatorArray(int nOps , Consumer<String[]> consumer ){
@@ -282,8 +298,11 @@ public class SearchFormula {
                         alist.add(nRet);
                     }
                     nRet = Integer.valueOf(num);
+                    //System.out.print(num + " ");
                 }
             }
+            //System.out.println();
+
             if( alist.size() < 2){
                 continue;
             }
