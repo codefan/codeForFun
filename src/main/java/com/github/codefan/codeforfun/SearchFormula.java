@@ -17,7 +17,10 @@ import java.util.function.Consumer;
 public class SearchFormula {
     public static Map<String, List<String>> foundReslutions = new HashMap<>(100);
 
-    //计算逆波兰式
+    /**计算逆波兰式
+     * @param reversePolish 逆波兰式， 其中只能是 Integer型的数据 和 “+-×/”运算符，不能有其他内型
+     * @return 返回分数结果，目的为了精确计算
+     */
     public static Fraction calcReversePolishRepresentation(Object[] reversePolish) {
         int len = reversePolish.length;
         Fraction[] stack = new Fraction[len/2 + 1];
@@ -50,7 +53,10 @@ public class SearchFormula {
         return stack[0];
     }
 
-    // 可以用四进制 方式来解决
+    /** 可以用四进制 方式来解决,
+     * @param nOps 运算符 数量， 一共有 nOps^4 个不同的组合
+     * @param consumer 对 每一个 组合进行 检索
+     */
     public static void makeOperatorArray2(int nOps , Consumer<String[]> consumer ){
         String[] opts = {"+","-","*","/","A"};
         long n = 1L << (nOps * 2);
@@ -65,9 +71,13 @@ public class SearchFormula {
             consumer.accept(opArr);
         }
     }
-
-    // 根据 二元运算符号的数量（nOps） 穷举所有的情况，数量为 nOps的4次方
-    // 这个比较大 没有采用返回 数组的方式，用消费者模式
+    /** 可以用四进制 方式来解决
+       // 根据 二元运算符号的数量（nOps） 穷举所有的情况，数量为 nOps的4次方
+       // 这个比较大 没有采用返回 数组的方式，用消费者模式
+     * 这个方法理论上来说更高效
+        @param nOps 运算符 数量， 一共有 nOps^4 个不同的组合
+      * @param consumer 对 每一个 组合进行 检索
+     */
     public static void makeOperatorArray(int nOps , Consumer<String[]> consumer ){
         String[] opts = {"+","-","*","/","A"};
         String[] opArr = new String[nOps];
@@ -76,32 +86,32 @@ public class SearchFormula {
             opArr[i] = opts[0];
             nPos[i] = 0;
         }
-        int j = 0;
+
         while(true){
             consumer.accept(opArr);
             //System.out.println( StringUtils.join(opArr,","));
-            nPos[j] = nPos[j] + 1;
-
-            while(j<nOps && nPos[j]==4){
+            int j = 0;
+            while(j<nOps && nPos[j]==3){
                 nPos[j] = 0;
-                opArr[j] = opts[0];
-                j++;
-                if(j>=nOps){
-                    break;
-                }
-                nPos[j] = nPos[j] + 1;
-            }
-
-            if(j>=nOps){
-                break;
-            }else{
                 opArr[j] = opts[nPos[j]];
-                j = 0;
+                j++;
             }
+            if(j==nOps){
+                break;
+            }
+            nPos[j] = nPos[j] + 1;
+            opArr[j] = opts[nPos[j]];
         }
     }
 
-    public static void filterFormula(final int filterValue, final Object[] reversePolish ,  Consumer<Object[]> consumer ){
+    /**
+     * 对 表达式进行 过滤，如果结果 为filterValue 就执行 consumer
+     * @param filterValue 过滤条件
+     * @param reversePolish 逆波兰式 表达式
+     * @param consumer 对符合条件的表达式 执行消费者 模式
+     */
+    public static void filterFormula(final int filterValue,
+                                     final Object[] reversePolish, Consumer<Object[]> consumer ){
         Fraction f = calcReversePolishRepresentation(reversePolish);
         if(f.equals(new Fraction(filterValue))) {
             consumer.accept(reversePolish);
@@ -109,10 +119,17 @@ public class SearchFormula {
         //System.out.println( StringUtils.join(reversePolish,','));
     }
 
-    // 根据给出的 数据 和 运算符号，来穷举 不同的 组合方式
-    // 对于 逆波兰式 来说 就是变换 运算符号的位置
-    // 并计算结果
-    // 对结果等于 filterValue 的表达式 执行 consumer 消费方法
+
+
+    /**
+     // 根据给出的 数据 和 运算符号，来穷举 不同的 组合方式
+     // 对于 逆波兰式 来说 就是变换 运算符号的位置
+     // 并计算结果
+     // 对结果等于 filterValue 的表达式 执行 consumer 消费方法
+     * @param data 给定的数
+     * @param opts 给定的 运算符号
+     * @param consumer 对每一个组合进行消费
+     */
     public static void makeFormulaAndCalc(List<Integer> data, String[] opts,
                                            Consumer<Object[]> consumer ){
         int dN = data.size();
@@ -176,7 +193,9 @@ public class SearchFormula {
         makeOperatorArray(nD-1, (opts) -> makeFormulaAndCalc(data, opts,  consumer));
     }
 
-    // 算24点 并将结果的逆波兰式转换为 四则运算表达式
+    /**并将结果的逆波兰式转换为 四则运算表达式
+     * @param reversePolish 逆波兰式
+     */
     @SuppressWarnings("unchecked")
     public static void transPolish(Object[] reversePolish){
         int len = reversePolish.length;
@@ -306,11 +325,14 @@ public class SearchFormula {
             if( alist.size() < 2){
                 continue;
             }
+            long d = System.currentTimeMillis();
             final int filterValue = nRet;
             searchFormulaAndCalc(alist,
                     (reversePolish) ->SearchFormula.filterFormula( filterValue, reversePolish, SearchFormula::transPolish ));
                             //(reversePolish)-> System.out.println( StringUtils.join(reversePolish,','))));
+            d = System.currentTimeMillis() - d;
             showResult();
+            System.out.println("检索一共消耗了：" + d +" 毫秒。");
         }
     }
 }
