@@ -184,7 +184,6 @@ public class SearchFormula {
                 break;
             }
         }
-
     }
 
     // 对给定的 数据 通过组合运算符号的方式 来 筛选符合 filterValue 结果的方式
