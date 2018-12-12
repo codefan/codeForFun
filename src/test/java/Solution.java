@@ -204,7 +204,7 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution s = new Solution();
-        System.out.println(s.isMatch("adceb","*a*b"));
+        System.out.println(s.isMatch("adfadcadcebdfadsadceb","*adc*adceb"));
         System.out.println(s.isMatch("a","*a*"));
         System.out.println(s.isMatch("ab","*?b*"));
     }
