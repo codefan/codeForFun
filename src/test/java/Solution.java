@@ -42,6 +42,7 @@ public class Solution {
                     return true;
                 }
                 //除法操作 a/b, 如果除数不为0
+                // 如果有一个为0 和上面的 * 乘法结果一样，也没有必要计算
                 if (b != 0 && a != 0) {
                     nums[i] = a / b;
                     if (_judgePoint(nums, n - 1, sum)) {
@@ -143,8 +144,7 @@ public class Solution {
         //int[] nums = { 3, 3, 8, 8 };
         System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
         System.out.println(s.atMostNGivenDigitSet(new String[]{"1","4","9"},1000000000));
-        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
-
+        System.out.println(s.judgePoint24(new int[]{3,3,8,8}));
     }
 }
 // 18851684897584
