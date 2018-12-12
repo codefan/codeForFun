@@ -1,3 +1,5 @@
+package com.github.codefan.codeforfun;
+
 import java.util.ArrayList;
 import java.util.List;
 
