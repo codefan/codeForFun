@@ -82,10 +82,68 @@ public class Solution {
         return res;
     }
 
+    public int atMostNGivenDigitSet(String[] D, int N) {
+        // 找到最大的数
+        String s = String.valueOf(N);
+        int [] bigData = new int[s.length()];
+        for(int i=0; i<s.length(); i++){
+            bigData[i] = D.length-1;
+        }
+        int bigLen = s.length();
+        boolean findBig = false;
+        for(int i=0; i<s.length(); i++){
+            boolean thisC = true;
+            for(int j=D.length-1; j>=0; j--) {
+                if (D[j].charAt(0) < s.charAt(i)) {
+                    bigData[i] = j;
+                    findBig = true;
+                    break;
+                }
+                if (D[j].charAt(0) == s.charAt(i)) {
+                    bigData[i] = j;
+                    thisC = false;
+                    break;
+                }
+            }
+
+            if(findBig){
+                break;
+            }
+
+            if(thisC){
+                bigData[i] = D.length-1;
+                // 借位
+                boolean b = false;
+                for(int j = i-1; j>=0; j-- ){
+                    if(bigData[j]>0){
+                        bigData[j] = bigData[j] -1;
+                        b = true;
+                        break;
+                    }
+                    if(bigData[j]==0){
+                        bigData[j] = D.length-1;
+                    }
+                }
+                if(!b) {
+                    bigLen --;
+                }
+                break;
+            }
+        }
+        int s1=0;
+        int sp =  bigLen < s.length() ? 1:0;
+        for(int i=0; i<bigLen; i++){
+            s1 = s1*D.length +(bigData[sp+i]+1);
+        }
+        return s1;
+    }
+
     public static void main(String[] args) {
         Solution s = new Solution();
         //int[] nums = { 3, 3, 8, 8 };
-        System.out.println(s.allocateCandy(5,6));
+        System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
+        System.out.println(s.atMostNGivenDigitSet(new String[]{"1","4","9"},1000000000));
+        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
 
     }
 }
