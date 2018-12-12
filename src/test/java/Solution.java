@@ -174,15 +174,38 @@ public class Solution {
         return res;
     }
 
+
+    public boolean isMatch(String s, String p) {
+        if(s==null || p==null)
+            return false;
+        int nLV = s.length();
+        int nLT = p.length();
+        int i =0,j=0,ss=-1,sp=-1;
+        while(i<nLV){
+            if(j < nLT && ( (p.charAt(j) != '*' && s.charAt(i) == p.charAt(j)) ||
+                    p.charAt(j) == '?')){
+                i++;j++;
+            }else if(j < nLT && p.charAt(j) == '*') {
+                sp = j;
+                j++;
+                ss = i;
+            }else if(sp != -1){
+                j = sp+1;
+                ss ++;
+                i = ss;
+            }else
+                return false;
+        }
+        while(j<nLT && p.charAt(j)=='*'){
+           j++;
+        }
+        return (i==nLV && j==nLT);
+    }
+
     public static void main(String[] args) {
         Solution s = new Solution();
-
-        System.out.println(s.largestNumber(new int[]{121,12}));
-        System.out.println(s.largestNumber(new int[]{1440,7548,4240,6616,733,4712,883,8,9576}));
-        System.out.println(s.largestNumber(new int[]{824,938,1399,5607,6973,5703,9609,4398,8247}));
-        //int[] nums = { 3, 3, 8, 8 };
-        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
-        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","4","9"},1000000000));
-        //System.out.println(s._judgePoint(new double[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1},12,81));
+        System.out.println(s.isMatch("adceb","*a*b"));
+        System.out.println(s.isMatch("a","*a*"));
+        System.out.println(s.isMatch("ab","*?b*"));
     }
 }
