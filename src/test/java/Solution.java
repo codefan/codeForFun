@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Solution {
     private static final double DIFF = 1E-6F;
@@ -139,18 +141,48 @@ public class Solution {
         return s1;
     }
 
+    public String largestNumber(int[] nums) {
+        if(nums==null){
+            return "0";
+        }
+        int l = nums.length;
+        List<String[]> sl = new ArrayList<>(l+1);
+        for(int i: nums){
+            String s = String.valueOf(i);
+            String [] value = new String[2];
+            value[0] = s;
+            value[1] = s;
+            while (value[1].length()<12){
+                value[1] = value[1] + s;
+            }
+            sl.add(value);
+        }
+
+        sl.sort((a,b)-> b[1].compareTo(a[1]));
+        String res="";
+        boolean hasNotZero = false;
+        for(String[] v  : sl){
+            if(!"0".equals(v[0])){
+                hasNotZero = true;
+            }
+            if(hasNotZero)
+                res = res + v[0];
+        }
+        if("".equals(res)){
+            return "0";
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Solution s = new Solution();
+
+        System.out.println(s.largestNumber(new int[]{121,12}));
+        System.out.println(s.largestNumber(new int[]{1440,7548,4240,6616,733,4712,883,8,9576}));
+        System.out.println(s.largestNumber(new int[]{824,938,1399,5607,6973,5703,9609,4398,8247}));
         //int[] nums = { 3, 3, 8, 8 };
-        System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
-        System.out.println(s.atMostNGivenDigitSet(new String[]{"1","4","9"},1000000000));
-        System.out.println(s.judgePoint24(new int[]{3,3,8,8}));
+        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","3","5","7"},100));
+        //System.out.println(s.atMostNGivenDigitSet(new String[]{"1","4","9"},1000000000));
+        //System.out.println(s._judgePoint(new double[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1},12,81));
     }
 }
-// 18851684897584
-// 1397281501935165
-// 6365767297450757748
-// 6009637891325159524
-// 1837153897788780084
-// 8115943777403887392
-// 6650043942411187488
