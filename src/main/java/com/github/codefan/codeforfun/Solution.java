@@ -1,7 +1,6 @@
 package com.github.codefan.codeforfun;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Solution {
     private static final double DIFF = 1E-6F;
@@ -144,36 +143,42 @@ public class Solution {
     }
 
     public String largestNumber(int[] nums) {
-        if(nums==null){
+        if(nums==null || nums.length==0){
             return "0";
         }
         int l = nums.length;
-        List<String[]> sl = new ArrayList<>(l+1);
-        for(int i: nums){
-            String s = String.valueOf(i);
-            String [] value = new String[2];
-            value[0] = s;
-            value[1] = s;
-            while (value[1].length()<12){
-                value[1] = value[1] + s;
-            }
-            sl.add(value);
+        if(l==0){
+            return Integer.toString(nums[0]);
+        }
+        String[] sl = new String[l];
+        for(int i=0;i<l;i++){
+            sl[i] = Integer.toString(nums[i]);
         }
 
-        sl.sort((a,b)-> b[1].compareTo(a[1]));
-        String res="";
-        boolean hasNotZero = false;
-        for(String[] v  : sl){
-            if(!"0".equals(v[0])){
-                hasNotZero = true;
+        Arrays.sort(sl, (a, b)->{
+            int n = a.length();
+            int m = b.length();
+            for(int i=0;i<n*m;i++){
+                char bc = b.charAt(i % m);
+                char ac = a.charAt(i % n);
+                if(bc>ac){
+                    return 1;
+                }
+                if(ac>bc){
+                    return -1;
+                }
             }
-            if(hasNotZero)
-                res = res + v[0];
+            return 0;
+        });
+        StringBuilder res = new StringBuilder();
+        for(int i=0;i<l;i++){
+            res.append(sl[i]);
         }
-        if("".equals(res)){
+        String rets = res.toString();
+        if(rets.charAt(0)=='0'){
             return "0";
         }
-        return res;
+        return rets;
     }
 
 
