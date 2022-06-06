@@ -89,7 +89,7 @@ public class Calculation24 {
     public static void main(String arg[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.println("请在一行中输入用空格隔开的4在1和10之间的整数，退出请输入exit：");
+            System.out.println("请在一行中输入用空格隔开的4在1和13之间的整数，退出请输入exit：");
             String s = br.readLine().trim();
             if(StringUtils.isBlank(s)){
                 continue;
